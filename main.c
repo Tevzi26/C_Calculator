@@ -23,39 +23,43 @@ double divide(double a, double b){
 	}
 }
 
-double sinus(double a){
-	return sin(a);
+void getType(char *input, int *isNum, int lenght){
+	
+	for (int i = 0; i < lenght; i++){
+		if (input[i] <= '9' && input[i] >= '0'){
+			isNum[i] = 1;
+		}
+		else if (input[i] == '+' || input[i] == '-' || input[i] == '/' || input[i] == '*'){
+			isNum[i] = 0;
+		}
+		else{
+			isNum[i] = -1;
+		}
+	}
 }
 
-double cosinus(double a){
-	return cos(a);
-}
-
-double tangens(double a){
-	return tan(a);
-}
-
- /*void getString(char *string, int size){
-	printf("Vnesi racun: ");
+void getString(char *string, int size){
+	printf("Vnesi izraz: ");
 	fgets(string, size, stdin);
 
 	int lenght = strlen(string);
 
 	if (lenght > 0 && string[lenght-1] == '\n') string[lenght-1] = '\0';
-}*/
+}
 
 int main(void){
-	/*char string[100];
-	getString(string, sizeof(string));*/
-
 	char input[100];
+	getString(input, sizeof(input));
+	
+	int n = strlen(input);
 	double num;
+	int tab[n];
+	getType(input, tab, n);
 
-	printf("Vnesi izraz: ");
-	fgets(input, sizeof(input), stdin);
-
-	printf("%s\n", input);
-
+	printf("%s\n%d\n", input, strlen(input));
+	for (int i = 0; i < n; i++){
+		printf("%d\n", tab[i]);
+	}
 
 
 	return 0;
