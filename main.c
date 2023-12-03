@@ -31,7 +31,9 @@ int isOperator(char c){
 
 void parseString(char *input, double *numbers, char *operators, int *nNum, int *nOp){
 	*nNum = 0;
-	*nOp = 0;
+	*nOp = 1;
+
+	if(isdigit(input[0])) operators[0] = '+';
 
 	for(int i = 0; input[i]; ++i){
 		if (isdigit(input[i]) || input[i] == '.' && isdigit(input[i+1] )) {
