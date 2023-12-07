@@ -29,14 +29,14 @@ int isOperator(char c){
 	return(c == '+' || c == '-' || c == '*' || c == '/' || c == '(' || c == ')');
 }
 
-void parseString(char *input, double *numbers, char *operators, int *nNum, int *nOp){
+void parseString(char *input, double *numbers, char *operators,int *sign, int *nNum, int *nOp){
 	*nNum = 0;
-	*nOp = 1;
+	*nOp = 0;
 
-	if(isdigit(input[0]) || input[0] == '+') operators[0] = '+';
-	else if(input[0] == '-') operators[0] = '-';
+	if(isdigit(input[0]) || input[0] == '+') *sign = 1;
+	else if(input[0] == '-') *sign = -1;
 
-	for(int i = 1; input[i]; ++i){
+	for(int i = 0; input[i]; ++i){
 		if (isdigit(input[i]) || input[i] == '.' && isdigit(input[i+1] )) {
 			numbers[*nNum] = strtod(input + i, NULL);
 			
@@ -46,7 +46,7 @@ void parseString(char *input, double *numbers, char *operators, int *nNum, int *
 
 			(*nNum)++;
 
-		} else if(isOperator(input[i])) {
+		} else if(isOperator(input[i]) && i != 0) {
 			operators[*nOp] = input[i];
 
 			(*nOp)++;
@@ -67,10 +67,10 @@ double operationOrder(char *operators, double *numbers){
 			
 		} else if(operators[i] == '/'){
 			if(result == 0){
-				result = result + numbers[n-2];
+				result = result + numbers[n];
 			}
-			printf("%.2f, %.2f\n %d\n", result, numbers[n-1], i);
-			result = divide(result, numbers[n-1]);
+			printf("%.2f, %.2f\n %d\n", result, numbers[n+1], i);
+			result = divide(result, numbers[n+1]);
 			
 		}
 		++n;
@@ -93,9 +93,10 @@ int main(void){
 
 	double numbers[100];
 	char operators[100];
+	int sign;
 	int nNum, nOp;
 
-	parseString(input, numbers, operators, &nNum, &nOp);
+	parseString(input, numbers, operators, &sign, &nNum, &nOp);
 
 	for (int i = 0; i < nNum; ++i)
 		printf("%.2f ", numbers[i]);
