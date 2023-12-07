@@ -33,9 +33,10 @@ void parseString(char *input, double *numbers, char *operators, int *nNum, int *
 	*nNum = 0;
 	*nOp = 1;
 
-	if(isdigit(input[0])) operators[0] = '+';
+	if(isdigit(input[0]) || input[0] == '+') operators[0] = '+';
+	else if(input[0] == '-') operators[0] = '-';
 
-	for(int i = 0; input[i]; ++i){
+	for(int i = 1; input[i]; ++i){
 		if (isdigit(input[i]) || input[i] == '.' && isdigit(input[i+1] )) {
 			numbers[*nNum] = strtod(input + i, NULL);
 			
@@ -53,6 +54,30 @@ void parseString(char *input, double *numbers, char *operators, int *nNum, int *
 	}
 }
 
+double operationOrder(char *operators, double *numbers){
+	int n = 0;
+	double result = 0;
+
+	for(int i = 0; i <= sizeof(operators); ++i){
+		if(operators[i] == '*'){
+			if(result == 0){
+				result = result + numbers[n-1];
+			}
+			result = multiply(result, numbers[n]);
+			
+		} else if(operators[i] == '/'){
+			if(result == 0){
+				result = result + numbers[n-2];
+			}
+			printf("%.2f, %.2f\n %d\n", result, numbers[n-1], i);
+			result = divide(result, numbers[n-1]);
+			
+		}
+		++n;
+	}
+	return result;
+}
+
 void getString(char *string, int size){
 	printf("Vnesi izraz: ");
 	fgets(string, size, stdin);
@@ -66,18 +91,19 @@ int main(void){
 	char input[100];
 	getString(input, sizeof(input));
 
-	double numbers[10];
-	char operators[10];
+	double numbers[100];
+	char operators[100];
 	int nNum, nOp;
 
 	parseString(input, numbers, operators, &nNum, &nOp);
 
-	printf("Expression 1:\n");
 	for (int i = 0; i < nNum; ++i)
 		printf("%.2f ", numbers[i]);
 		printf("\n");
 	for (int i = 0; i < nOp; ++i)
 		printf("%c ", operators[i]);
 	printf("\n");
+
+	printf("%.2f\n", operationOrder(operators, numbers));
 	return 0;
 }
