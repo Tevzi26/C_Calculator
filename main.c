@@ -29,7 +29,7 @@ int isOperator(char c){
 	return(c == '+' || c == '-' || c == '*' || c == '/' || c == '(' || c == ')');
 }
 
-void parseString(char *input, double *numbers, char *operators,int *sign, int *nNum, int *nOp){
+void parseString(char *input, double *numbers, char *operators,double *sign, int *nNum, int *nOp){
 	*nNum = 0;
 	*nOp = 0;
 
@@ -54,28 +54,27 @@ void parseString(char *input, double *numbers, char *operators,int *sign, int *n
 	}
 }
 
-double operationOrder(char *operators, double *numbers){
+double operationOrder(char *operators, double *numbers, double *sign){
 	int n = 0;
 	double result = 0;
 
 	for(int i = 0; i <= sizeof(operators); ++i){
 		if(operators[i] == '*'){
 			if(result == 0){
-				result = result + numbers[n-1];
+				result = result + numbers[n];
 			}
-			result = multiply(result, numbers[n]);
+			result = multiply(result, numbers[n+1]);
 			
 		} else if(operators[i] == '/'){
 			if(result == 0){
 				result = result + numbers[n];
 			}
-			printf("%.2f, %.2f\n %d\n", result, numbers[n+1], i);
 			result = divide(result, numbers[n+1]);
 			
 		}
 		++n;
 	}
-	return result;
+	return *sign * result;
 }
 
 void getString(char *string, int size){
@@ -93,7 +92,7 @@ int main(void){
 
 	double numbers[100];
 	char operators[100];
-	int sign;
+	double sign;
 	int nNum, nOp;
 
 	parseString(input, numbers, operators, &sign, &nNum, &nOp);
@@ -105,6 +104,6 @@ int main(void){
 		printf("%c ", operators[i]);
 	printf("\n");
 
-	printf("%.2f\n", operationOrder(operators, numbers));
+	printf("%.2f\n", operationOrder(operators, numbers, &sign));
 	return 0;
 }
