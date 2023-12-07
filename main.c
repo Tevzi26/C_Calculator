@@ -55,26 +55,48 @@ void parseString(char *input, double *numbers, char *operators,double *sign, int
 }
 
 double operationOrder(char *operators, double *numbers, double *sign){
-	int n = 0;
 	double result = 0;
+	numbers[0] = *sign * numbers[0];
+	int x = 0;
 
 	for(int i = 0; i <= sizeof(operators); ++i){
 		if(operators[i] == '*'){
 			if(result == 0){
-				result = result + numbers[n];
+				result = result + numbers[i];
 			}
-			result = multiply(result, numbers[n+1]);
+			result = multiply(result, numbers[i+1]);
+			printf("%.2f, %.2f\n", result, numbers[i]);
 			
 		} else if(operators[i] == '/'){
 			if(result == 0){
-				result = result + numbers[n];
+				result = result + numbers[i];
 			}
-			result = divide(result, numbers[n+1]);
-			
+			result = divide(result, numbers[i+1]);
+			printf("%.2f, %.2f\n", result, numbers[i]);
 		}
-		++n;
+		
 	}
-	return *sign * result;
+	if(operators[0] == '+' || operators[0] == '-') result = result + numbers[0];
+
+	for(int i = 0; i <= sizeof(operators); ++i){
+		if(operators[i] == '+'){
+			//if(i == 0){
+			//	result = result + numbers[i];
+			//}
+			result = result + numbers[x];
+			printf("%.2f, %.2f\n", result, numbers[x]);
+			++x;
+			
+		} else if(operators[i] == '-'){
+			if(i == 0){
+				result = result + numbers[i];
+			} else{
+				result = result - numbers[i+1];
+				printf("%.2f, %.2f\n", result, numbers[i+1]);
+			}
+		}
+	}
+	return result;
 }
 
 void getString(char *string, int size){
