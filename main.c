@@ -25,8 +25,12 @@ double divide(double a, double b){
 	}
 }
 
+double power(double a, double b){
+	return pow(a, b);
+}
+
 int isOperator(char c){
-	return(c == '+' || c == '-' || c == '*' || c == '/' || c == '(' || c == ')');
+	return(c == '+' || c == '-' || c == '*' || c == '/' || c == '^');
 }
 
 void parseString(char *input, double *numbers, char *operators,double *sign, int *nNum, int *nOp){
@@ -63,7 +67,12 @@ double operationOrder(char *operators, double *numbers, double *sign){
 			numbers[i+1] = numbers[i+1] * -1;
 			
 		}
-		if(operators[i] == '*'){
+		if(operators[i] == '^'){
+			numbers[i+1] = power(numbers[i], numbers[i+1]);
+
+			numbers[i] = 0;
+
+		}else if(operators[i] == '*'){
 			numbers[i+1] = multiply(numbers[i], numbers[i+1]);
 			if(operators[i-1] == '-') -1 * numbers[i+1];
 
