@@ -4,6 +4,8 @@
 #include <ctype.h>
 #include <math.h>
 
+#define PI 3.1415
+
 double add(double a, double b){
 	return a+b;
 }
@@ -33,7 +35,7 @@ int isOperator(char c){
 	return(c == '+' || c == '-' || c == '*' || c == '/' || c == '^');
 }
 
-void parseString(char *input, double *numbers, char *operators,double *sign, int *nNum, int *nOp){
+void parseString(char *input, double *numbers, char *operators, char *func, double *sign, int *nNum, int *nOp){
 	*nNum = 0;
 	*nOp = 0;
 
@@ -54,11 +56,23 @@ void parseString(char *input, double *numbers, char *operators,double *sign, int
 			operators[*nOp] = input[i];
 
 			(*nOp)++;
-	        }
+	        } else if(input[i] == 's'){
+			func[*nOp] = input[i];
+			i = i+2;
+
+		}
 	}
 }
 
-double operationOrder(char *operators, double *numbers, double *sign){
+void func(char *func, double *numbers, int nNum){
+	for(int i = 0; i <= nNum; ++i){
+		if(func[i] == 's'){
+			numbers[i] = sin(numbers[i] * (PI / 180));
+		}
+	}	
+}
+
+double operationOrder(char *operators, double *numbers, double *sign, char *func){
 	double result = 0;
 	numbers[0] = *sign * numbers[0];
 
@@ -71,7 +85,7 @@ double operationOrder(char *operators, double *numbers, double *sign){
 			numbers[i+1] = power(numbers[i], numbers[i+1]);
 
 			numbers[i] = 0;
-
+			
 		}else if(operators[i] == '*'){
 			numbers[i+1] = multiply(numbers[i], numbers[i+1]);
 			if(operators[i-1] == '-') -1 * numbers[i+1];
@@ -109,10 +123,12 @@ int main(void){
 
 	double numbers[100];
 	char operators[100];
+	char funct[100];
 	double sign;
 	int nNum, nOp;
 
-	parseString(input, numbers, operators, &sign, &nNum, &nOp);
+	parseString(input, numbers, operators, funct, &sign, &nNum, &nOp);
+	func(funct, numbers, nNum);
 
 	for (int i = 0; i < nNum; ++i)
 		printf("%.2f ", numbers[i]);
@@ -121,6 +137,7 @@ int main(void){
 		printf("%c ", operators[i]);
 	printf("\n");
 
-	printf("%.2f\n", operationOrder(operators, numbers, &sign));
+	printf("%.2f\n", operationOrder(operators, numbers, &sign, funct));
+	double x = 0;
 	return 0;
 }
