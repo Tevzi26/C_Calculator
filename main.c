@@ -56,10 +56,19 @@ void parseString(char *input, double *numbers, char *operators, char *func, doub
 			operators[*nOp] = input[i];
 
 			(*nOp)++;
-	        } else if(input[i] == 's'){
+	        } else if(input[i] == 's' && input[i+1] == 'i' && input[i+2] == 'n'){
 			func[*nOp] = input[i];
 			i = i+2;
 
+		} else if(input[i] == 'c' && input[i+1] == 'o' && input[i+2] == 's'){
+			func[*nOp] = input[i];
+			i = i+2;
+		} else if(input[i] == 't' && input[i+1] == 'a' && input[i+2] == 'n'){
+			func[*nOp] = input[i];
+			i = i+2;
+		}else if(input[i] == 'l' && input[i+1] == 'o' && input[i+2] == 'g'){
+			func[*nOp] = input[i];
+			i = i+2;
 		}
 	}
 }
@@ -68,13 +77,21 @@ void func(char *func, double *numbers, int nNum){
 	for(int i = 0; i <= nNum; ++i){
 		if(func[i] == 's'){
 			numbers[i] = sin(numbers[i] * (PI / 180));
+		} else if(func[i] == 'c'){
+			numbers[i] = cos(numbers[i] * (PI / 180));
+		} else if(func[i] == 's'){
+			numbers[i] = tan(numbers[i] * (PI / 180)); //TODO: error handling
+		} else if(func[i] == 'l'){
+			numbers[i] = log(numbers[i]);
 		}
-	}	
+	}
 }
 
-double operationOrder(char *operators, double *numbers, double *sign, char *func){
+double operationOrder(char *operators, double *numbers, double *sign, char *func, int nOp){
 	double result = 0;
-	numbers[0] = *sign * numbers[0];
+	if(!func[0])  
+		numbers[0] = *sign * numbers[0];
+	//numbers[0] = 1;
 
 	for(int i = 0; i <= sizeof(operators); ++i){
 		if(operators[i] == '-'){
@@ -99,9 +116,8 @@ double operationOrder(char *operators, double *numbers, double *sign, char *func
 			numbers[i] = 0;
 	
 		}
-	}
-		
-	for(int i = 0; i <= sizeof(operators); ++i){
+	}		
+	for(int i = 0; i <= nOp; ++i){
 		result = result + numbers[i];	
 		
 	}
@@ -132,12 +148,12 @@ int main(void){
 
 	for (int i = 0; i < nNum; ++i)
 		printf("%.2f ", numbers[i]);
-		printf("\n");
+	printf("\n");
 	for (int i = 0; i < nOp; ++i)
 		printf("%c ", operators[i]);
 	printf("\n");
-
-	printf("%.2f\n", operationOrder(operators, numbers, &sign, funct));
+		
+	printf("%.2f\n", operationOrder(operators, numbers, &sign, funct, nOp));
 	double x = 0;
 	return 0;
 }
