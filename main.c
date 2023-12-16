@@ -4,7 +4,8 @@
 #include <ctype.h>
 #include <math.h>
 
-#define PI 3.1415
+#define PI 3.14159265358979323846
+#define MAX 100
 
 double add(double a, double b){
 	return a+b;
@@ -24,6 +25,7 @@ double divide(double a, double b){
 	}
 	else {
 		printf("error");
+		exit(1);
 	}
 }
 
@@ -66,9 +68,15 @@ void parseString(char *input, double *numbers, char *operators, char *func, doub
 		} else if(input[i] == 't' && input[i+1] == 'a' && input[i+2] == 'n'){
 			func[*nOp] = input[i];
 			i = i+2;
+		}else if(input[i] == 'l' && input[i+1] == 'n'){
+			func[*nOp] = 'n';
+			i = i+1;
 		}else if(input[i] == 'l' && input[i+1] == 'o' && input[i+2] == 'g'){
-			func[*nOp] = input[i];
+			func[*nOp] = 'l';
 			i = i+2;
+		}else if(input[i] == 's' && input[i+1] == 'q' && input[i+2] == 'r' && input[i+3] == 't'){
+			func[*nOp] = 'r';
+			i = i+3;
 		}
 	}
 }
@@ -77,22 +85,45 @@ void func(char *func, double *numbers, int nNum){
 	for(int i = 0; i <= nNum; ++i){
 		if(func[i] == 's'){
 			numbers[i] = sin(numbers[i] * (PI / 180));
-		} else if(func[i] == 'c'){
+		}else if(func[i] == 'c'){
 			numbers[i] = cos(numbers[i] * (PI / 180));
-		} else if(func[i] == 's'){
-			numbers[i] = tan(numbers[i] * (PI / 180)); //TODO: error handling
-		} else if(func[i] == 'l'){
-			numbers[i] = log(numbers[i]);
+		}else if(func[i] == 't'){
+			if(fmod(numbers[i], 90) == 0.0 && fmod(numbers[i], 180) != 0.0){
+				printf("error\n");
+				exit(1);
+			}else{ 
+				numbers[i] = tan(numbers[i] * (PI / 180));
+			}
+		}else if(func[i] == 'n'){
+			if(numbers[i] <= 0){
+				printf("error\n");
+				exit(1);
+			}else{
+				numbers[i] = log(numbers[i]);
+			}
+		}else if(func[i] == 'l'){
+			if(numbers[i] <= 0){
+				printf("error\n");
+				exit(1);
+			}else{
+				numbers[i] = log10(numbers[i]);
+			}
+		}else if(func[i] == 'r'){
+			if(numbers[i] < 0){
+				printf("error\n");
+				exit(1);
+			}else{
+				numbers[i] = sqrt(numbers[i]);
+			}
 		}
 	}
 }
 
-double operationOrder(char *operators, double *numbers, double *sign, char *func, int nOp){
+double operationOrder(char *operators, double *numbers, double *sign, char *input, int nOp){
 	double result = 0;
-	if(!func[0])  
+	if(isOperator(input[0]))  
 		numbers[0] = *sign * numbers[0];
-	//numbers[0] = 1;
-
+	
 	for(int i = 0; i <= sizeof(operators); ++i){
 		if(operators[i] == '-'){
 			numbers[i+1] = numbers[i+1] * -1;
@@ -134,12 +165,12 @@ void getString(char *string, int size){
 }
 
 int main(void){
-	char input[100];
+	char input[MAX];
 	getString(input, sizeof(input));
 
-	double numbers[100];
-	char operators[100];
-	char funct[100];
+	double numbers[MAX];
+	char operators[MAX];
+	char funct[MAX];
 	double sign;
 	int nNum, nOp;
 
@@ -153,7 +184,7 @@ int main(void){
 		printf("%c ", operators[i]);
 	printf("\n");
 		
-	printf("%.2f\n", operationOrder(operators, numbers, &sign, funct, nOp));
+	printf("%.2f\n", operationOrder(operators, numbers, &sign, input, nOp));
 	double x = 0;
 	return 0;
 }
