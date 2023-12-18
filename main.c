@@ -45,7 +45,7 @@ void parseString(char *input, double *numbers, char *operators, char *func, doub
 	else if(input[0] == '-') *sign = -1;
 
 	for(int i = 0; input[i]; ++i){
-		if (isdigit(input[i]) || input[i] == '.' && isdigit(input[i+1] )) {
+		if(isdigit(input[i]) || input[i] == '.' && isdigit(input[i+1] )) {
 			numbers[*nNum] = strtod(input + i, NULL);
 			
 
@@ -54,19 +54,19 @@ void parseString(char *input, double *numbers, char *operators, char *func, doub
 
 			(*nNum)++;
 
-		} else if(isOperator(input[i]) && i != 0) {
+		}else if(isOperator(input[i]) && i != 0) {
 			operators[*nOp] = input[i];
 
 			(*nOp)++;
-	        } else if(input[i] == 's' && input[i+1] == 'i' && input[i+2] == 'n'){
-			func[*nOp] = input[i];
+	        }else if(input[i] == 's' && input[i+1] == 'i' && input[i+2] == 'n'){
+			func[*nOp] = 's';
 			i = i+2;
 
-		} else if(input[i] == 'c' && input[i+1] == 'o' && input[i+2] == 's'){
-			func[*nOp] = input[i];
+		}else if(input[i] == 'c' && input[i+1] == 'o' && input[i+2] == 's'){
+			func[*nOp] = 'c';
 			i = i+2;
-		} else if(input[i] == 't' && input[i+1] == 'a' && input[i+2] == 'n'){
-			func[*nOp] = input[i];
+		}else if(input[i] == 't' && input[i+1] == 'a' && input[i+2] == 'n'){
+			func[*nOp] = 't';
 			i = i+2;
 		}else if(input[i] == 'l' && input[i+1] == 'n'){
 			func[*nOp] = 'n';
@@ -166,25 +166,20 @@ void getString(char *string, int size){
 
 int main(void){
 	char input[MAX];
-	getString(input, sizeof(input));
-
 	double numbers[MAX];
 	char operators[MAX];
 	char funct[MAX];
 	double sign;
 	int nNum, nOp;
+	double result;
 
+	getString(input, sizeof(input));
 	parseString(input, numbers, operators, funct, &sign, &nNum, &nOp);
 	func(funct, numbers, nNum);
+	result = operationOrder(operators, numbers, &sign, input, nOp);
 
-	for (int i = 0; i < nNum; ++i)
-		printf("%.2f ", numbers[i]);
-	printf("\n");
-	for (int i = 0; i < nOp; ++i)
-		printf("%c ", operators[i]);
-	printf("\n");
-		
-	printf("%.2f\n", operationOrder(operators, numbers, &sign, input, nOp));
-	double x = 0;
+	printf("%s = %.*f\n",input, 4, result);
+	
+
 	return 0;
 }
